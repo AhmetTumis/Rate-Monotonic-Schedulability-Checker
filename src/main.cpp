@@ -12,7 +12,11 @@ int main(){
         std::cout << "Provided task set is not schedulable by RM\n";
     
     rms.SortAndAssignPriOrder();
-    rms.ResponseTimeAnalysis();
+    if(rms.ResponseTimeAnalysis()){
+        std::cout << "yes\n";
+    } else {
+        std::cout << "no\n";
+    }
 
     return EXIT_SUCCESS;
 

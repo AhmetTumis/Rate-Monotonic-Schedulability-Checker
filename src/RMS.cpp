@@ -74,7 +74,7 @@ void RMS::SortAndAssignPriOrder()
 bool RMS::ResponseTimeAnalysis()
 {
     bool isSchedulable = true;
-
+    int taskIndex = 0;
     for(const auto &t : taskSet){
         
         if(&t == &taskSet.front()){
@@ -84,17 +84,53 @@ bool RMS::ResponseTimeAnalysis()
             } else {
                 std::cout << "X\n";
                 isSchedulable = false;
-                break;
+                return isSchedulable;
             }
+            taskIndex++;
+            continue;
         }    
         
         int counter = 0;
+        int prevR_i = 0;
         // ⌈x⌉
-        while(true){
-            std::string temp = t.taskName 
-            std::cout << 
-        }
+        bool resume = true;
+        while(resume){
 
+            std::string temp = t.taskName + "^" + std::to_string(counter);
+            int curR_i = 0;
+
+            if(counter == 0){
+                //add print here
+                if(t.C_i > t.T_i){
+                    isSchedulable = false;
+                    return isSchedulable;
+                }
+                prevR_i = t.C_i;
+                counter++;
+                continue;
+            }
+            
+            curR_i += t.C_i;
+
+            for(int i=0; i<taskIndex; i++){
+                curR_i += ((prevR_i + taskSet[i].T_i - 1) / taskSet[i].T_i)*taskSet[i].C_i;                
+            }
+
+            if(curR_i > t.T_i){
+                isSchedulable = false;
+                return isSchedulable;
+            }
+            std::cout << temp << " " << curR_i << "\n";
+
+            if(curR_i == prevR_i){
+                std::cout << "Fixed point detected\n";
+                resume = false;
+            }
+            prevR_i = curR_i;
+            counter++;
+
+        }
+        taskIndex++;
     }
 
     return isSchedulable;
