@@ -7,7 +7,7 @@ void RMS::GetTaskSet()
 
     std::cout << "Please enter the number of tasks: ";
     std::cin >> taskSetSize;
-
+    
     for(int i=1; i<taskSetSize+1; i++){
         Task newTask;
         newTask.taskNum = i;
@@ -23,7 +23,7 @@ void RMS::GetTaskSet()
                     << newTask.T_i << " to the task set!\n";  
         taskSet.push_back(newTask);
     }
-
+    std::cout << "\n";
 }
 
 void RMS::computeUtilFactor()
@@ -73,18 +73,18 @@ void RMS::SortAndAssignPriOrder()
 
 bool RMS::ResponseTimeAnalysis()
 {
-    bool isSchedulable = true;
     int taskIndex = 0;
     for(const auto &t : taskSet){
         
+        std::cout << "\n\n";
+
         if(&t == &taskSet.front()){
             std::cout << t.taskName << "^0 = C_0 = " << t.C_i << "<=" << t.T_i << "? ";
             if(t.C_i <= t.T_i){
                 std::cout << "√\n";
             } else {
                 std::cout << "X\n";
-                isSchedulable = false;
-                return isSchedulable;
+                return false;
             }
             taskIndex++;
             continue;
@@ -100,30 +100,32 @@ bool RMS::ResponseTimeAnalysis()
             int curR_i = 0;
 
             if(counter == 0){
-                //add print here
+                std::cout << t.taskName << "^0 = C_0 = " << t.C_i << "<=" << t.T_i << "? ";
                 if(t.C_i > t.T_i){
-                    isSchedulable = false;
-                    return isSchedulable;
+                    std::cout << "X\n";
+                    return false;
                 }
+                std::cout << "√\n";
                 prevR_i = t.C_i;
                 counter++;
                 continue;
             }
             
             curR_i += t.C_i;
-
+            std::cout << temp << " = " << t.C_i; 
             for(int i=0; i<taskIndex; i++){
+                std::cout << " + ⌈" << prevR_i << "/" << taskSet[i].T_i << "⌉ * " << taskSet[i].C_i;  
                 curR_i += ((prevR_i + taskSet[i].T_i - 1) / taskSet[i].T_i)*taskSet[i].C_i;                
             }
-
+            std::cout << " = " << curR_i << " <= " << t.T_i << "? ";
             if(curR_i > t.T_i){
-                isSchedulable = false;
-                return isSchedulable;
+                std::cout << "X\n";
+                return false;
             }
-            std::cout << temp << " " << curR_i << "\n";
+            std::cout << "√\n";
 
             if(curR_i == prevR_i){
-                std::cout << "Fixed point detected\n";
+                std::cout << "\nFixed point detected\n";
                 resume = false;
             }
             prevR_i = curR_i;
@@ -132,6 +134,5 @@ bool RMS::ResponseTimeAnalysis()
         }
         taskIndex++;
     }
-
-    return isSchedulable;
+    return true;
 }
