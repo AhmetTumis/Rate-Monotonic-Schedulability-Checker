@@ -17,7 +17,7 @@ class RMS{
 
 public:
 
-    float utilFactor = 0.0;
+    float utilFactor = 0.0f;
     std::vector<Task> taskSet;
     int taskSetSize;
     bool isCheckable = false;
