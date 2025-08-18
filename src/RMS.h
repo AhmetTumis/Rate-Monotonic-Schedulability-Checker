@@ -17,13 +17,14 @@ class RMS{
 
 public:
 
-    float utilFactor;
+    float utilFactor = 0.0;
     std::vector<Task> taskSet;
     int taskSetSize;
+    bool isCheckable = false;
     bool isRMGuaranteed = false;
 
     void GetTaskSet();
-    void computeUtilFactor();
+    void ComputeUtilFactor();
     
     void PrintHello();
 

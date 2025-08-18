@@ -2,41 +2,67 @@
 
 void RMS::GetTaskSet()
 {
-
     taskSetSize = 0;
 
-    std::cout << "Please enter the number of tasks: ";
-    std::cin >> taskSetSize;
-    
-    for(int i=1; i<taskSetSize+1; i++){
+    while (true) {
+        std::cout << "Please enter the number of tasks (>0): ";
+        if (std::cin >> taskSetSize && taskSetSize > 0) {
+            break;
+        } else {
+            std::cout << "Invalid input. Number of tasks must be a positive integer.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+
+    for (int i = 1; i <= taskSetSize; i++) {
         Task newTask;
         newTask.taskNum = i;
-        newTask.taskName = "P_" + std::to_string(newTask.taskNum); 
-        std::cout << "C_" << i << ": ";
-        std::cin >> newTask.C_i;
-        std::cout << "T_" << i << ": " ;
-        std::cin >> newTask.T_i;
-    
-        std::cout << "Adding task " << newTask.taskName 
-                    << " with C_" << i << ": " << newTask.C_i 
-                    << " and T_" << i << ": "
-                    << newTask.T_i << " to the task set!\n";  
+        newTask.taskName = "P_" + std::to_string(newTask.taskNum);
+
+        while (true) {
+            std::cout << "C_" << i << ": ";
+            if (std::cin >> newTask.C_i && newTask.C_i > 0) {
+                break;
+            } else {
+                std::cout << "Invalid input. C_" << i << " must be a positive integer.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }
+
+        while (true) {
+            std::cout << "T_" << i << ": ";
+            if (std::cin >> newTask.T_i && newTask.T_i > 0) {
+                break;
+            } else {
+                std::cout << "Invalid input. T_" << i << " must be a positive integer.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }
+
+        std::cout << "Adding task " << newTask.taskName
+                  << " with C_" << i << ": " << newTask.C_i
+                  << " and T_" << i << ": " << newTask.T_i
+                  << " to the task set!\n";
+
         taskSet.push_back(newTask);
     }
+
     std::cout << "\n";
 }
 
-void RMS::computeUtilFactor()
+void RMS::ComputeUtilFactor()
 {
     for(int i = 0; i < taskSet.size(); i++){
         utilFactor += float(taskSet[i].C_i) / float(taskSet[i].T_i);
     }
-    std::cout << "Util Factor is: " << utilFactor << "\n";
 }
 
 void RMS::PrintHello()
 {
-        std::cout << "Hello\n";
+    std::cout << "Hello\n";
 
 }
 
@@ -45,13 +71,16 @@ bool RMS::CheckSceduleGuarantee()
     
     float limit = taskSetSize * (std::pow(2, 1.0/taskSetSize) - 1.0);
     
-    std::cout << "Task set size: " << taskSetSize << "\n";
     std::cout << "Task set utilization factor: " << utilFactor << "\n";
+    std::cout << "Task set size: " << taskSetSize << "\n";
     std::cout << "Value the ufactor should be bigger than: " << limit << "\n";
+
+    if(utilFactor <= 1.0)
+        isCheckable = true;
 
     if(utilFactor <= limit)
         return true;
-    
+
     return false;
 }
 
